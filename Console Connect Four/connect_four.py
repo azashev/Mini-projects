@@ -1,7 +1,13 @@
 from collections import deque
+import sys
+import os
+import subprocess
 
 
 def column_validator(column_to_validate):
+    if column_to_validate.lower() in ["restart", "reset", "new"]:
+        subprocess.call([sys.executable, os.path.realpath(__file__)] +
+                        sys.argv[1:])
     valid_cols = {
         "one": 1,
         "two": 2,
@@ -73,10 +79,12 @@ print("Welcome to Connect Four!")
 while True:
     [print(f"[ {', '.join(str(x) for x in row)} ]") for row in board]
     player_number, player_symbol = turn[0]
-    player_column = input(f"\nPlayer {player_number}, please choose a column (1 to 7): \n")
+    player_column = input(f"\nPlayer {player_number}, "
+                          f"please choose a column (1 to 7; or type restart/reset/new to restart the game): \n")
     validated_column = column_validator(player_column)
     if not validated_column:
-        print(f"{player_column} is not a valid column. Please select a valid column (1 to 7)")
+        print(f"{player_column} is not a valid column. Please select a valid column "
+              f"(1 to 7; or type restart/reset/new to restart the game)")
         continue
     column = int(validated_column) - 1
 
@@ -102,4 +110,3 @@ while True:
                         check_for_win(r, c, coordinates, 1)
 
     turn.append(turn.popleft())
-
