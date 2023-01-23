@@ -1,5 +1,5 @@
 import pyfiglet
-from random import choice as random_choice
+from random import choice as rc
 from collections import deque
 import string
 import words
@@ -83,10 +83,10 @@ def play(words_to_guess, stages, points, lost=False):
                 if guessed_words:
                     print_words = f"Guessed words: {', '.join(guessed_words)}"
 
-                print("=" * 70)
+                print(sep)
                 print(f"Stage {len(stages) - len(hangman_stages)}{' ' * 10}", end='')
                 print(f"{print_words}")
-                print("=" * 70)
+                print(sep)
                 print(*current_stage)
 
                 print(f"\nHints left: {hints_left}\n")
@@ -100,12 +100,12 @@ def play(words_to_guess, stages, points, lost=False):
                         while current_guess == "hint!":
                             print("\nYou have used all available hints for this word.")
                             current_guess = input("Guess (a letter, the whole word, or type hint! to "
-                                                  "reveal a random character): ")
+                                                  "reveal a random character): ").lower()
                     else:
                         hints_left -= 1
                         points -= 10
                         hint_used = True
-                        index_to_reveal = random_choice([i for i, x in enumerate(to_guess_hidden) if x == "_"])
+                        index_to_reveal = rc([i for i, x in enumerate(to_guess_hidden) if x == "_"])
                         reveal_letter = to_guess[index_to_reveal]
 
                         to_guess_hidden = letter_reveal(to_guess_hidden, reveal_letter, index_to_reveal)
@@ -159,14 +159,14 @@ def generate_words(player_category):
     if player_category == '4':
         for c in words.words:
             word_category = words.words_categories[c]
-            add_word = random_choice(words.words[c])
+            add_word = rc(words.words[c])
             player_words_to_guess[word_category] = [add_word]
 
     else:
         word_category = words.words_categories[player_category]
         player_words_to_guess[word_category] = []
         while len(player_words_to_guess[word_category]) < words_to_guess_counter:
-            add_word = random_choice(words.words[player_category])
+            add_word = rc(words.words[player_category])
             if add_word not in player_words_to_guess[word_category]:
                 player_words_to_guess[word_category].append(add_word)
 
@@ -202,6 +202,7 @@ words_to_guess_counter = 3  # with the option to extend
 player_points = words_to_guess_counter * 30
 categories_count = len(words.words) + 1
 alphabet = string.ascii_lowercase
+sep = "=" * 70
 player_words_to_guess = {}
 words_categories = deque()
 guessed_words = []
@@ -213,7 +214,7 @@ select_category(category)
 game = play(player_words_to_guess, stages, player_points)
 
 print()
-print("=" * 70)
+print(sep)
 if game[0]:
     print("Congratulations! You've won!")
     print(f"Points left: {game[1]}")
@@ -223,4 +224,4 @@ else:
 if guessed_words:
     print(f"Guessed words: {', '.join(guessed_words)}")
 
-print("=" * 70)
+print(sep)
