@@ -1,7 +1,7 @@
 # Console Connect Four
 
 ### A simple two player connect four game.
-<img src=https://user-images.githubusercontent.com/102361003/212683358-9a1c3280-cec3-426a-80c1-9e10ed926c08.png width="250">
+<img src=https://user-images.githubusercontent.com/102361003/212683358-9a1c3280-cec3-426a-80c1-9e10ed926c08.png width="400">
 
 
 The main logic:
@@ -18,10 +18,10 @@ Test it on [Replit](https://replit.com/@azashev/Console-Connect-Four?v=1)
 
 This is what the game will look like in the end on the console:
 
-<img src=https://user-images.githubusercontent.com/102361003/212685868-8627e338-f9f7-4ef9-93df-22c5047fc765.png width="380">
+<img src=https://user-images.githubusercontent.com/102361003/212755152-c7d4b40e-f74d-436d-a535-76b6b77999a3.png width="650">
 
-<img src=https://user-images.githubusercontent.com/102361003/212686291-d1c5fcba-d285-4ffa-952e-2383486a65de.png width="380">
+<img src=https://user-images.githubusercontent.com/102361003/212755320-39ddfdea-c743-48e0-97d0-f3f29e0ee160.png width="650">
 
-<img src=https://user-images.githubusercontent.com/102361003/212686393-932b9c0c-d238-4e70-94a3-7aafe4013faf.png width="380">
+<img src=https://user-images.githubusercontent.com/102361003/212755443-7c35b8c5-d891-4f2f-bbdb-4b38d0f7d89b.png width="650">
 
-<img src=https://user-images.githubusercontent.com/102361003/212686566-79d176ab-2ad5-4788-9fca-a44680a7345a.png width="380">
+<img src=https://user-images.githubusercontent.com/102361003/212755545-f238829e-54ac-4906-afd6-89e3771206b5.png width="650">
