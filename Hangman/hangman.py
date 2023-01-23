@@ -108,9 +108,6 @@ def play(words_to_guess, stages, points, lost=False):
                         index_to_reveal = random_choice([i for i, x in enumerate(to_guess_hidden) if x == "_"])
                         reveal_letter = to_guess[index_to_reveal]
 
-                        # to_guess_hidden = to_guess_hidden[:index_to_reveal] + reveal_letter + \
-                        #                   to_guess_hidden[index_to_reveal + 1:]
-
                         to_guess_hidden = letter_reveal(to_guess_hidden, reveal_letter, index_to_reveal)
                         to_guess = hide_letter(to_guess, index_to_reveal)
                         display_word = f"{l_letter}{to_guess_hidden}{r_letter}"
