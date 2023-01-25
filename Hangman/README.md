@@ -18,7 +18,7 @@ The rules:
 Good luck!
 
 \
-Test it on [Replit](https://replit.com/@azashev/Custon-Hangman-Game?v=1)
+Test it on [Replit](https://replit.com/@azashev/Custom-Hangman-Game?v=1)
 
 
 This is what the game will look like in the end on the console:
