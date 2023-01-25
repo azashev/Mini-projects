@@ -93,14 +93,13 @@ def play(words_to_guess, stages, points, lost=False):
                 print(f"Word category: {current_category.capitalize()}")
                 print(f"Word to guess: {display_word}\n")
                 current_guess = input("Guess (a letter, the whole word, or type hint! to reveal a random character and "
-                                      "lose 10 points): ").lower()
+                                      "lose 10 points): \n").lower()
 
                 if current_guess == "hint!":
                     if not hints_left:
                         while current_guess == "hint!":
                             print("\nYou have used all available hints for this word.")
-                            current_guess = input("Guess (a letter, the whole word, or type hint! to "
-                                                  "reveal a random character): ").lower()
+                            current_guess = input("Guess (a letter, the whole word): ").lower()
                     else:
                         hints_left -= 1
                         points -= 10
