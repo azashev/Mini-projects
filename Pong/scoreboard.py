@@ -25,10 +25,15 @@ class Scoreboard(Turtle):
         self.goto(0, 230)
         self.clear()
         self.write("The first player to reach 10 points wins!\n", align="center",
-                   font=("Courier", 20, "normal"))
+                   font=("Courier", 18, "normal"))
         self.goto(0, 210)
         self.write(f"{self.player_one_name}: {self.l_score}  {self.player_two_name}: {self.r_score}", align="center",
-                   font=("Courier", 22, "normal"))
+                   font=("Courier", 20, "normal"))
+
+    def update_ball_speed(self, speed_counter):
+        self.update_score()
+        self.goto(-70, 180)
+        self.write(f"Ball Speed Level: {speed_counter}", align="left", font=("Courier", 10, "normal"))
 
     def l_point(self):
         self.l_score += 1
