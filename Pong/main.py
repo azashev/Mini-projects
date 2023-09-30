@@ -43,9 +43,11 @@ class Game:
         self.scoreboard = Scoreboard(player_one_name=player_one_name, player_two_name=player_two_name)
         self.ball = Ball(self.scoreboard)
         self.setup_keybindings()
+        self.scoreboard.display_keybindings(self.mode)
         self.r_paddle_move = 0
         self.l_paddle_move = 0
         self.game_running = True
+        self.screen.update()
 
     def set_r_paddle_move(self, distance):
         self.r_paddle_move = distance
@@ -138,25 +140,29 @@ class Game:
 
     def check_r_paddle_misses(self):
         if self.ball.xcor() > self.BALL_RIGHT_BOUNDARY:
-            time.sleep(2)
             self.scoreboard.l_point()
             if self.scoreboard.l_score >= self.POINTS_TO_WIN:
                 self.end_game(self.scoreboard.player_one_name)
-            self.countdown_timer(3)
+                return
+            time.sleep(2)
             self.ball.reset_position()
             self.r_paddle.reset_position()
             self.l_paddle.reset_position()
+            self.screen.update()
+            self.countdown_timer(3)
 
     def check_l_paddle_misses(self):
         if self.ball.xcor() < self.BALL_LEFT_BOUNDARY:
-            time.sleep(2)
             self.scoreboard.r_point()
             if self.scoreboard.r_score >= self.POINTS_TO_WIN:
                 self.end_game(self.scoreboard.player_two_name)
-            self.countdown_timer(3)
+                return
+            time.sleep(2)
             self.ball.reset_position()
             self.r_paddle.reset_position()
             self.l_paddle.reset_position()
+            self.screen.update()
+            self.countdown_timer(3)
 
     def move_l_paddle_automatically(self):
         if self.difficulty == "easy":
@@ -201,8 +207,8 @@ def main():
         print("Invalid choice! Please enter c to play against computer or p to play against another player.")
         mode = input("Play against (C)omputer or (P)layer? ").lower()
 
-    player_two_name = input("Enter name for player one: ")
-    player_one_name = "Computer" if mode == "c" else input("Enter name for player two: ")
+    player_two_name = input("Enter name for the first player: ")
+    player_one_name = "Computer" if mode == "c" else input("Enter name for the second player: ")
 
     screen = setup_screen()
     welcome_message = display_welcome_message(0, 350, "Welcome to Pong!", font_size=24)

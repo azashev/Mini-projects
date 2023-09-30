@@ -19,7 +19,13 @@ class Scoreboard(Turtle):
         self.countdown_turtle.hideturtle()
         self.countdown_turtle.goto(0, 0)
 
+        self.keybindings_turtle = Turtle()
+        self.keybindings_turtle.color("white")
+        self.keybindings_turtle.penup()
+        self.keybindings_turtle.hideturtle()
+
         self.update_score()
+        self.display_keybindings()
 
     def update_score(self):
         self.goto(0, 230)
@@ -43,8 +49,17 @@ class Scoreboard(Turtle):
         self.r_score += 1
         self.update_score()
 
+    def display_keybindings(self, mode="c"):
+        self.goto(250, 150)
+        self.write(f"Controls:\nUP: ↑\nDOWN: ↓", align="left", font=("Courier", 8, "normal"))
+
+        if mode == "p":
+            self.goto(-350, 150)
+            self.write(f"Controls:\nUP: W\nDOWN: S", align="left", font=("Courier", 8, "normal"))
+
     def display_countdown(self, count):
         self.countdown_turtle.clear()
+        self.countdown_turtle.goto(0, 80)
         self.countdown_turtle.write(str(count), align="center", font=("Courier", 48, "normal"))
 
     def clear_countdown(self):

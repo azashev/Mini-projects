@@ -55,6 +55,5 @@ class Ball(Turtle):
         else:
             self.x_move = self.INITIAL_SPEED
 
-        self.y_move = -self.INITIAL_SPEED
         self.distance_traveled = 0
         self.speed_counter = 0
