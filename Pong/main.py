@@ -3,22 +3,11 @@ import time
 
 from paddle import Paddle
 from scoreboard import Scoreboard
-from settings import setup_screen, Button, display_welcome_message
+from settings import setup_screen, Button, display_welcome_message, ResetButton
 from ball import Ball
 
 SELECTED_DIFFICULTY = None
 BUTTONS = []
-
-
-def choose_difficulty(difficulty, screen, welcome_message, difficulty_message):
-    global SELECTED_DIFFICULTY, BUTTONS
-    SELECTED_DIFFICULTY = difficulty
-    for button in BUTTONS:
-        button.hide_and_clear()
-    welcome_message.clear()
-    difficulty_message.clear()
-    screen.update()
-    screen.onscreenclick(None)
 
 
 class Game:
@@ -32,22 +21,39 @@ class Game:
     PADDLE_LEFT_COLLISION_MIN = -340
     PADDLE_LEFT_COLLISION_MAX = -330
 
-    POINTS_TO_WIN = 10
+    POINTS_TO_WIN = 2
 
-    def __init__(self, player_one_name, player_two_name, mode, difficulty):
+    def __init__(self, player_one_name, player_two_name, mode, difficulty=None):
         self.screen = setup_screen()
         self.mode = mode
+        self.window_closed = False
         self.difficulty = difficulty
+        self.player_one_name = player_one_name
+        self.player_two_name = player_two_name
         self.r_paddle = Paddle((350, 0))
         self.l_paddle = Paddle((-350, 0))
-        self.scoreboard = Scoreboard(player_one_name=player_one_name, player_two_name=player_two_name)
+        self.scoreboard = Scoreboard(player_one_name=player_one_name, player_two_name=player_two_name,
+                                     difficulty=self.difficulty)
         self.ball = Ball(self.scoreboard)
         self.setup_keybindings()
         self.scoreboard.display_keybindings(self.mode)
         self.r_paddle_move = 0
         self.l_paddle_move = 0
         self.game_running = True
+        self.reset_button = ResetButton(self.reset_game)
+        self.screen.onscreenclick(self.reset_button.on_click)
         self.screen.update()
+
+        if self.mode == "c":
+            self.scoreboard.display_difficulty(self.difficulty)
+
+    def reset_game(self):
+        self.screen.clear()
+        self.ball.hideturtle()
+        self.l_paddle.hideturtle()
+        self.r_paddle.hideturtle()
+        self.scoreboard.clear()
+        game_setup(self.mode, self.player_one_name, self.player_two_name)
 
     def set_r_paddle_move(self, distance):
         self.r_paddle_move = distance
@@ -98,6 +104,8 @@ class Game:
     def play(self):
         self.countdown_timer(5)
         while self.game_running:
+            if not self.screen._root:
+                self.game_running = False
             time.sleep(self.ball.ball_move_speed)
             self.screen.update()
             self.ball.move()
@@ -191,17 +199,50 @@ class Game:
         self.scoreboard.clear_countdown()
 
     def end(self):
-        self.screen.exitonclick()
+        def on_window_close(x, y):
+            self.window_closed = True
+            self.screen.bye()
+
+        self.screen.onclick(on_window_close)
 
     def end_game(self, winner_name):
         self.game_running = False
-        self.scoreboard.clear()
-        self.scoreboard.write(f"{winner_name} Wins!", align="center", font=("Courier", 24, "normal"))
+        self.scoreboard.display_winner(winner_name)
+
+        end_time = time.time() + 60
+        while time.time() < end_time:
+            self.screen.update()
+            if self.reset_button.clicked:
+                return
+            time.sleep(0.1)
+        self.screen.bye()
 
 
-def main():
+def choose_difficulty(difficulty, screen, welcome_message, difficulty_message, player_one_name, player_two_name):
     global SELECTED_DIFFICULTY, BUTTONS
+    SELECTED_DIFFICULTY = difficulty
 
+    for button in BUTTONS:
+        button.hide_and_clear()
+
+    welcome_message.clear()
+    difficulty_message.clear()
+    screen.update()
+    screen.onscreenclick(None)
+
+    start_game('c', player_one_name, player_two_name, difficulty)
+
+
+def start_game(mode, player_one_name, player_two_name, difficulty=None):
+    if mode == 'c' and not difficulty:
+        raise ValueError("Must provide difficulty for computer mode.")
+    game = Game(player_one_name, player_two_name, mode, difficulty)
+    game.play()
+    game.end()
+    return game
+
+
+def select_mode():
     mode = input("Play against (C)omputer or (P)layer? ").lower()
     while mode not in ["c", "p"]:
         print("Invalid choice! Please enter c to play against computer or p to play against another player.")
@@ -210,46 +251,49 @@ def main():
     player_two_name = input("Enter name for the first player: ")
     player_one_name = "Computer" if mode == "c" else input("Enter name for the second player: ")
 
+    return mode, player_one_name, player_two_name
+
+
+def game_setup(mode, player_one_name, player_two_name):
     screen = setup_screen()
     welcome_message = display_welcome_message(0, 350, "Welcome to Pong!", font_size=24)
     difficulty_message = display_welcome_message(0, 100, "Please select a difficulty:")
 
     if mode == "c":
+        global BUTTONS
         BUTTONS = [
-            Button(0, 50, "Easy", 100, 30, lambda: choose_difficulty("easy", screen,
-                                                                     welcome_message, difficulty_message)),
-            Button(0, 0, "Medium", 100, 30, lambda: choose_difficulty("medium", screen,
-                                                                      welcome_message, difficulty_message)),
-            Button(0, -50, "Hard", 100, 30, lambda: choose_difficulty("hard", screen,
-                                                                      welcome_message, difficulty_message))
+            Button(0, 50, "Easy (60% success)", 180, 30,
+                   lambda x=None, y=None: choose_difficulty("easy", screen, welcome_message, difficulty_message,
+                                                            player_one_name, player_two_name)),
+            Button(0, 0, "Medium (70% success)", 180, 30,
+                   lambda x=None, y=None: choose_difficulty("medium", screen, welcome_message, difficulty_message,
+                                                            player_one_name, player_two_name)),
+            Button(0, -50, "Hard (80% success)", 180, 30,
+                   lambda x=None, y=None: choose_difficulty("hard", screen, welcome_message, difficulty_message,
+                                                            player_one_name, player_two_name))
         ]
 
         def on_screen_click(x, y):
             for button in BUTTONS:
                 if button.is_inside(x, y):
-                    button.callback()
+                    button.on_click(x, y)
 
         screen.onscreenclick(on_screen_click)
-
-        def check_difficulty_selection(x=None, y=None):
-            if SELECTED_DIFFICULTY is not None:
-                for button in BUTTONS:
-                    button.hideturtle()
-                game = Game(player_one_name, player_two_name, mode, difficulty=SELECTED_DIFFICULTY)
-                game.play()
-            else:
-                screen.ontimer(check_difficulty_selection, 100)
-
-        check_difficulty_selection()
         screen.mainloop()
 
     else:
         welcome_message.clear()
         difficulty_message.clear()
+        game = start_game(mode, player_one_name, player_two_name)
+        return game
 
-        game = Game(player_one_name, player_two_name, mode, difficulty=None)
-        game.play()
-        game.end()
+
+def main():
+    mode, player_one_name, player_two_name = select_mode()
+    while True:
+        game_instance = game_setup(mode, player_one_name, player_two_name)
+        if game_instance.window_closed:
+            break
 
 
 if __name__ == "__main__":
