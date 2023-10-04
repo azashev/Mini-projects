@@ -21,7 +21,7 @@ class Game:
     PADDLE_LEFT_COLLISION_MIN = -340
     PADDLE_LEFT_COLLISION_MAX = -330
 
-    POINTS_TO_WIN = 2
+    POINTS_TO_WIN = 10
 
     def __init__(self, player_one_name, player_two_name, mode, difficulty=None):
         self.screen = setup_screen()
