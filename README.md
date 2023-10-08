@@ -1,6 +1,6 @@
 # Mini-projects
 
-# ============================================
+# ====================================
 
 # Pong Game
 
@@ -83,4 +83,4 @@ Use the arrow keys to move your paddle.
 
 <img src="https://github.com/azashev/Mini-projects/assets/102361003/44d66598-8b13-4b22-ae60-e09f1f98921b" alt="Screenshot_14-pong" width="400"/> 
 
-# ============================================
+# =====================================
